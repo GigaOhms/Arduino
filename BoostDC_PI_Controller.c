@@ -53,9 +53,9 @@ void setup(){
     TCCR1A |= (1 << WGM11);
     TCCR1B |= (1 << WGM12)|(1 << WGM13); // chọn Fast PWM chế độ chọn TOP_value tự do  ICR1                     
     TCCR1A |= (1 << COM1B1); // So sánh thường( none-inverting)
-    ICR1 = 800;              // xung răng cưa tràn sau 30000 P_clock
+    ICR1 = 800;              // xung răng cưa tràn sau 800 P_clock
     TCCR1B |= (1 << CS10);   // F_clock/1=16mhz
-    //F_pwm=16mhz/30001=533.315 hz
+    //F_pwm = 16mhz/800 = 20kHz
 }
 
 
