@@ -11,8 +11,6 @@ ISR (TIMER2_COMPA_vect){        //TIMER2_OVF_vect
     data = (800 * sin(2*pi*f*t) + 800) / 2;
     OCR1B = data;
     Serial.println(data);
-    // f2str(data, buf);
-    // Serial.println(buf);
     t += 0.0001;
     if (t >= 0.0199)
         t = 0.0;
