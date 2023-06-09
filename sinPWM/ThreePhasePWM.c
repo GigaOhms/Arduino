@@ -40,7 +40,7 @@
 #define TOP0 256
 #define TOP1 256
 #define TOP2 256
-#define M = 0.6
+#define M 0.6
 
 // PWM 1-2 = PIN 5-6
 // PWM 3-4 = PIN 9-10
@@ -51,7 +51,7 @@
 
 
 int f = 50;
-volatile float t = 0.0;
+volatile double t = 0.0;
 volatile float data1, data2, data3;
 volatile int TEST = 0;
 // char buf[12];
@@ -61,9 +61,9 @@ ISR (TIMER2_OVF_vect){        //TIMER2_OVF_vect
     TCNT1 = 0;
     TCNT2 = 0;
     
-    data1 = (TOP1 * sin(2.0*pi*f*t) + TOP1) / 2;
-    data2 = (TOP1 * sin(2.0*pi*f*t + 2.0*pi/3.0) + TOP1) / 2;
-    data3 = (TOP1 * sin(2.0*pi*f*t + 4.0*pi/3.0) + TOP1) / 2;
+    data1 = (M * TOP1 * sin(2.0*pi*f*t) + TOP1) / 2;
+    data2 = (M * TOP1 * sin(2.0*pi*f*t + 2.0*pi/3.0) + TOP1) / 2;
+    data3 = (M * TOP1 * sin(2.0*pi*f*t + 4.0*pi/3.0) + TOP1) / 2;
     OCR0A = data1;           // PWM Pin 6 
     OCR0B = data1;           // PWM Pin 5 inverted
     OCR1A = data2;           // PWM Pin 9
