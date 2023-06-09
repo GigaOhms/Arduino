@@ -40,6 +40,7 @@
 #define TOP0 256
 #define TOP1 256
 #define TOP2 256
+#define M = 0.6
 
 // PWM 1-2 = PIN 5-6
 // PWM 3-4 = PIN 9-10
@@ -74,8 +75,8 @@ ISR (TIMER2_OVF_vect){        //TIMER2_OVF_vect
     // f2str(data, buf);
     // Serial.println(buf);
  
-    t += 0.0001;
-    if (t >= 0.1249){
+    t += 0.000016;
+    if (t >= 0.124980){
         t = 0.0;
         // digitalWrite(2, TEST);
         // TEST = !TEST;
