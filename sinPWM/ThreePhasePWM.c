@@ -36,14 +36,14 @@ ISR (TIMER2_OVF_vect){        //TIMER2_OVF_vect
     OCR2A = data3;           // PWM Pin 11
     OCR2B = data3;           // PWM Pin 3 inverted
 
-        // Serial.println(data1);
-        // Serial.println(data2);
-        // Serial.println(data3);
+    // Serial.println(data1);
+    // Serial.println(data2);
+    // Serial.println(data3);
     // f2str(data, buf);
     // Serial.println(buf);
 
-    t += 0.000016;
-    if (t >= 0.019980){
+    t += 0.000016;          // 1/62500
+    if (t >= 0.019980){     // 1/Fsin - 1/62500 - 1/62500/4
         t = 0.0;
     }
 }
@@ -68,7 +68,7 @@ void setup() {
     TIMSK2 |= (1 << TOIE2); // Timer2 Overflow Interrupt Enable
     sei();                  // Enable global interrupts   
 
-    // PWM by timer 0 ---------------------------------------------------
+    // PWM by timer 0 ------------------------------------------------------------------
     TCNT0 = 0;
     TCCR0A = 0; TCCR0B = 0; // Reset 2 registers
     DDRD |= (1 << PD5);     // PD5 is OUTPUT (pin 5)
@@ -84,8 +84,7 @@ void setup() {
     // Frequence = Fpwm / 256 = 62500 Hz
     // Top value = 256
 
-
-    // PWM by timer 1 -------------------------------------------------
+    // PWM by timer 1 --------------------------------------------------------------------
     TCNT1 = 0;
     TCCR1A = 0; TCCR1B = 0; // Reset 2 registers
     DDRB |= (1 << PB2);     // PB2 is OUTPUT (pin 10)
