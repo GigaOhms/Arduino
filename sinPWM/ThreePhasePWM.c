@@ -6,7 +6,7 @@
 #define TOP0 256
 #define TOP1 256
 #define TOP2 256
-#define M 0.6
+#define M 0.7
 #define F 50.0
 
 // PWM 1-2 = PIN 5-6
@@ -27,8 +27,8 @@ ISR (TIMER2_OVF_vect){        //TIMER2_OVF_vect
     TCNT2 = 0; 
     
     data1 = (M * TOP1 * sin(2.0*PI*F*t) + TOP1) / 2;
-    data2 = (M * TOP1 * sin(2.0*PI*F*t + 2.0*pi/3.0) + TOP1) / 2;
-    data3 = (M * TOP1 * sin(2.0*PI*F*t + 4.0*pi/3.0) + TOP1) / 2;
+    data2 = (M * TOP1 * sin(2.0*PI*F*t + 2.0*PI/3.0) + TOP1) / 2;
+    data3 = (M * TOP1 * sin(2.0*PI*F*t + 4.0*PI/3.0) + TOP1) / 2;
     OCR0A = data1;           // PWM Pin 6 
     OCR0B = data1;           // PWM Pin 5 inverted
     OCR1A = data2;           // PWM Pin 9
@@ -43,7 +43,7 @@ ISR (TIMER2_OVF_vect){        //TIMER2_OVF_vect
     // Serial.println(buf);
 
     t += 0.000016;
-    if (t >= 0.124980){
+    if (t >= 0.019980){
         t = 0.0;
     }
 }
@@ -68,7 +68,8 @@ void setup() {
     TIMSK2 |= (1 << TOIE2); // Timer2 Overflow Interrupt Enable
     sei();                  // Enable global interrupts   
 
-    // PWM by timer 0 ----------------------------------------------------------------
+    // PWM by timer 0 ---------------------------------------------------
+    TCNT0 = 0;
     TCCR0A = 0; TCCR0B = 0; // Reset 2 registers
     DDRD |= (1 << PD5);     // PD5 is OUTPUT (pin 5)
     DDRD |= (1 << PD6);     // PB1 is OUTPUT (pin 6 )   
@@ -83,7 +84,9 @@ void setup() {
     // Frequence = Fpwm / 256 = 62500 Hz
     // Top value = 256
 
-    // PWM by timer 1 --------------------------------------------------------------------
+
+    // PWM by timer 1 -------------------------------------------------
+    TCNT1 = 0;
     TCCR1A = 0; TCCR1B = 0; // Reset 2 registers
     DDRB |= (1 << PB2);     // PB2 is OUTPUT (pin 10)
     DDRB |= (1 << PB1);     // PB1 is OUTPUT (pin 9 )   
