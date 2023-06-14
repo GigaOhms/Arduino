@@ -5,6 +5,10 @@
 #define TOP0 256.0
 #define F 50.0
 #define SQRT3	1.7320508075688772935274463415059
+#define K1 10.1
+#define VDC 85.5
+#define ONE_by_VDC 0.01169590643
+#define PU 0.0009765625
 
 // PWM 1-2 = PIN 5-6
 // PWM 3-4 = PIN 9-10
@@ -19,8 +23,6 @@ volatile double	T1, T2, T0;
 volatile double	S1, S2, S3;
 volatile int i = 0;
 volatile byte TEST = 0;
-// volatile int TEST = 0;
-// char buf[12];
 
 void SVPWM(void);
 
@@ -37,16 +39,12 @@ ISR (TIMER1_OVF_vect){        //TIMER1_OVF_vect
     OCR2A = ((vc[i] - 0.5) * m + 0.5) * TOP0 + 0.5;           // PWM Pin 11
     
     i++;
-    if (i >= 100){
+    if (i >= 100)
         i = 0;
-        digitalWrite(2, TEST);
-        TEST = ~TEST;
-    } 
 }
 
 void setup() {
-    // Serial.begin(115200);
-    pinMode(2, OUTPUT);
+    pinMode(A0, INPUT);
 
     cli();//stop interrupts
 
@@ -98,14 +96,13 @@ void setup() {
     TCCR1A |= (1 << COM1B1); // None-inverted mode
     TCCR1A |= (1 << COM1A1);    // None-inverted mode Pin 9
     // TCCR1A |= (1 << COM1B1) | (1 << COM1B0);  // inverted mode Pin 10
-    
     ICR1 = 3199;                // Frequency = 16M / ICR1
     TCCR1B |= (1 << CS10);              // No Prescaling = F_Clock or F_clock/1=16mhz
-    
     TIMSK1 |= (1 << TOIE1);         // Timer1 Overflow Interrupt Enable
+    
     sei();
 }
 
 void loop() {
-
+    m = analogRead(A0) * PU * 5.0 * K1 * SQRT3 * ONE_by_VDC;
 }
