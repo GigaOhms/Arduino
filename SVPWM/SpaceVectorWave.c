@@ -6,7 +6,7 @@
 #define F 50.0
 #define togiGain 1.0f
 #define togiWTz 3.1415926535897932384626433832795e-2f
-#define M 0.7
+#define M 0.71
 #define SQRT3	1.7320508075688772935274463415059
 
 volatile float va, vb, vc;
