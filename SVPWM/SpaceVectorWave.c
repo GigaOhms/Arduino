@@ -18,14 +18,14 @@ volatile double	S1, S2, S3;
 void SVPWM(void);
 
 void SVWave(void){
-    printf("int data[201] = {");
-    for (int i = 0; i < 200; i++){
+    printf("float va[101] = {");
+    for (int i = 0; i < 100; i++){
         va = (sin(2.0*pi*F*t) + 1) / 2.0;
         vb = (sin(2.0*pi*F*t + 2.0*pi/3.0) + 1.0) / 2.0;
         vc = (sin(2.0*pi*F*t + 4.0*pi/3.0) + 1.0) / 2.0;
         SVPWM();
-        printf("%.4f\n",(S3 - 0.5) * M + 0.5);        // S1, S2, S3 with M = 0.7
-        t += 0.0001; // 0 <= t <= 0.02
+        printf("%.4f, ", S3);        
+        t += 0.0002; // 0 <= t <= 0.02
     }
     printf("}\n");
 }
