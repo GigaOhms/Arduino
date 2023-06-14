@@ -6,7 +6,7 @@
 #define F 50.0
 #define togiGain 1.0f
 #define togiWTz 3.1415926535897932384626433832795e-2f
-#define M 1.0
+#define M 0.7
 #define SQRT3	1.7320508075688772935274463415059
 
 volatile float va, vb, vc;
@@ -24,7 +24,7 @@ void SVWave(void){
         vb = (sin(2.0*pi*F*t + 2.0*pi/3.0) + 1.0) / 2.0;
         vc = (sin(2.0*pi*F*t + 4.0*pi/3.0) + 1.0) / 2.0;
         SVPWM();
-        printf("%.4f\n",(S3 - 0.5) * 0.7 + 0.5);        // S1, S2, S3 with M = 0.7
+        printf("%.4f\n",(S3 - 0.5) * M + 0.5);        // S1, S2, S3 with M = 0.7
         t += 0.0001; // 0 <= t <= 0.02
     }
     printf("}\n");
@@ -67,8 +67,8 @@ void SVPWM(void){
         sect	=	6;
     }
 
-    T1	=	M * sin((60 - phi) * pi /180);
-    T2	=	M * sin(phi * pi/180);
+    T1	=	1.0 * sin((60 - phi) * pi /180);        // 1.0 is M
+    T2	=	1.0 * sin(phi * pi/180);                // 1.0 is M
     T0	=	1 - T1 - T2;
 
     switch (sect){
