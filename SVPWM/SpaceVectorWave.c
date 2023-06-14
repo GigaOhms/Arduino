@@ -24,7 +24,7 @@ void SVWave(void){
         vb = (sin(2.0*pi*F*t + 2.0*pi/3.0) + 1.0) / 2.0;
         vc = (sin(2.0*pi*F*t + 4.0*pi/3.0) + 1.0) / 2.0;
         SVPWM();
-        printf("%.4f, ", S3);        
+        printf("%.4f, ", S3);      // Updata M: (S3 - 0.5) * M + 0.5  
         t += 0.0002; // 0 <= t <= 0.02
     }
     printf("}\n");
