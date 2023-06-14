@@ -6,7 +6,7 @@
 #define F 50.0
 #define togiGain 1.0f
 #define togiWTz 3.1415926535897932384626433832795e-2f
-#define M 0.7
+#define M 1.0
 #define SQRT3	1.7320508075688772935274463415059
 
 volatile float va, vb, vc;
@@ -16,7 +16,20 @@ volatile double	T1, T2, T0;
 volatile double	S1, S2, S3;
 
 void SVPWM(void);
-void SVWave(void);
+
+void SVWave(void){
+    printf("int data[201] = {");
+    for (int i = 0; i < 200; i++){
+        va = (sin(2.0*pi*F*t) + 1) / 2.0;
+        vb = (sin(2.0*pi*F*t + 2.0*pi/3.0) + 1.0) / 2.0;
+        vc = (sin(2.0*pi*F*t + 4.0*pi/3.0) + 1.0) / 2.0;
+        SVPWM();
+        printf("%.4f\n",(S3 - 0.5) * 0.7 + 0.5);        // S1, S2, S3 with M = 0.7
+        t += 0.0001; // 0 <= t <= 0.02
+    }
+    printf("}\n");
+}
+
 
 int main(int argc, char const *argv[])
 {
@@ -24,22 +37,7 @@ int main(int argc, char const *argv[])
     return 0;
 }
 
-void SVWave(void)
-{
-    printf("int data[201] = {");
-    for (int i = 0; i < 200; i++){
-        va = (sin(2.0*pi*F*t) + 1) / 2.0;
-        vb = (sin(2.0*pi*F*t + 2.0*pi/3.0) + 1.0) / 2.0;
-        vc = (sin(2.0*pi*F*t + 4.0*pi/3.0) + 1.0) / 2.0;
-        SVPWM();
-        printf("%d, ", (int)round(S1 * 255));        
-        t += 0.0001; // 0 <= t <= 0.02
-    }
-    printf("}\n");
-}
-
-void SVPWM(void)
-{
+void SVPWM(void){
     double	v_alpha	= 	sqrt(2.0 / 3.0) * (va - 0.5*vb - 0.5*vc);
     double	v_beta	=	sqrt(2.0 / 3.0) * SQRT3 / 2.0 * (vb - vc);
     double	theta	= 	atan2(v_beta, v_alpha) * 180/pi;
