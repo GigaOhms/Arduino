@@ -10,14 +10,12 @@
 #define ONE_by_VDC  0.01169590643
 #define PU          0.0009765625
 
-// PWM 1-2 = PIN 5-6
-// PWM 3-4 = PIN 9-10
-// PWM 5-6 = PIN 3-11
+// PWM 1 = PIN 5
+// PWM 2 = PIN 6
+// PWM 3 = PIN 11
 
-// PWM pin 10 = 5 = 3
-// PWM pin 11 = 9 = 6
 
-volatile double t = 0.0, m = 0.9;
+volatile double t = 0.0, m = 1.0;
 volatile int	phi, sect;
 volatile double	T1, T2, T0;
 volatile double	S1, S2, S3;
@@ -30,9 +28,7 @@ float vc[101] = {0.0000, 0.0012, 0.0049, 0.0092, 0.0170, 0.0245, 0.0364, 0.0506,
 
 
 ISR (TIMER1_OVF_vect){        //TIMER1_OVF_vect 
-    TCNT0 = 0;
-    TCNT2 = 0;
-
+    
     m = analogA0 * PU * 5.0 * K1 * SQRT3 * ONE_by_VDC;
     m = m > 0.95 ? 0.95 : m;
     m = m < 0.05 ? 0.05 : m;
@@ -41,7 +37,7 @@ ISR (TIMER1_OVF_vect){        //TIMER1_OVF_vect
     OCR0A = ((va[i] - 0.5) * m + 0.5) * TOP0 + 0.5;           // PWM Pin 6
     OCR0B = ((vb[i] - 0.5) * m + 0.5) * TOP0 + 0.5;           // PWM Pin 5
     OCR2A = ((vc[i] - 0.5) * m + 0.5) * TOP0 + 0.5;           // PWM Pin 11
-    
+
     i++;
     if (i >= 100){
         i = 0;
@@ -50,15 +46,15 @@ ISR (TIMER1_OVF_vect){        //TIMER1_OVF_vect
     }
 }
 
+
 void setup() {
-    // Serial.begin(115200);
     pinMode(2, OUTPUT);
     pinMode(A0, INPUT);
 
     cli();//stop interrupts
 
     // PWM by timer 0 ---------------------------------------------------
-    TCNT0 = 0;
+    // TCNT0 = 0;
     TCCR0A = 0; TCCR0B = 0; // Reset 2 registers
     DDRD |= (1 << PD5);     // PD5 is OUTPUT (pin 5)
     DDRD |= (1 << PD6);     // PB1 is OUTPUT (pin 6 )   
@@ -74,8 +70,9 @@ void setup() {
     TCCR0B |= (1 << CS10);   // No Prescaling = F_Clock or F_clock/1=16mhz
     
     
-    // PWM by timer 2 and Interrupt ---------------------------------------------------
-    TCNT2 = 0;
+    // PWM by timer 2 ---------------------------------------------------
+    // TCNT0 = 0;
+    // TCNT2 = 0;
     TCCR2A = 0; TCCR2B = 0;
     DDRD |= (1 << PD3);   // output Pin 3
     DDRB |= (1 << PB3);   // output Pin 11
@@ -84,6 +81,7 @@ void setup() {
     // TCCR2A |= (1 << WGM21) | (1 << WGM20);      // Fast PWM
     TCCR2A |= (1 << WGM20);      // PWM Phase Corrected - Top = 0xFF
     TCCR2B |= (0 << CS22) | (0 << CS21) | (1 << CS20);  // Prescaler
+    // TIMSK2 |= (1 << TOIE2);             // Timer2 Overflow Interrupt Enable
 
 
     // PWM by timer 1 & Interrupt-------------------------------------------------
@@ -98,9 +96,12 @@ void setup() {
     TCCR1A |= (1 << COM1A1);    // None-inverted mode Pin 9
     // TCCR1A |= (1 << COM1B1) | (1 << COM1B0);  // inverted mode Pin 10
     
-    ICR1 = 3199;                // Frequency = 16M / ICR1
+    ICR1 = 3199;                        // Top value [Frequency = 16M / ICR1]
     TCCR1B |= (1 << CS10);              // No Prescaling = F_Clock or F_clock/1=16mhz
-    TIMSK1 |= (1 << TOIE1);         // Timer1 Overflow Interrupt Enable
+    TIMSK1 |= (1 << TOIE1);             // Timer1 Overflow Interrupt Enable
+
+    TCNT0 = 0;
+    TCNT2 = 0;
     sei();
 }
 
